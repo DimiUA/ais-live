@@ -6,7 +6,7 @@
         AIS Live GPS tracker
     </description>
     <author email="jon@automotiveintegration.com.au" href="http://automotiveintegration.com.au">
-        The Automotive Integration
+        The Automotive Integration 
     </author>
     <content src="index.html" />
     <access origin="*" />
