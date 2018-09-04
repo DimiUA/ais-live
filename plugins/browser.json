@@ -1,0 +1,40 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.sinopacific.ais"
+        },
+        "phonegap-plugin-push": {
+            "SENDER_ID": "XXXXXXX",
+            "PACKAGE_NAME": "com.sinopacific.ais"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.sinopacific.ais"
+        },
+        "cordova-plugin-dialogs": {
+            "PACKAGE_NAME": "com.sinopacific.ais"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.sinopacific.ais"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.sinopacific.ais"
+        },
+        "cordova-plugin-buildinfo": {
+            "PACKAGE_NAME": "com.sinopacific.ais"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.sinopacific.ais"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.sinopacific.ais"
+        }
+    },
+    "dependent_plugins": {}
+}
