@@ -242,3 +242,6 @@
 .icon-menu-reports:before {
   content: "\26";
 }
+.icon-speedlimit:before {
+  content: "\27";
+}

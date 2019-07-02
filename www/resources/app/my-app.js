@@ -301,6 +301,7 @@ API_URL.URL_RESET_PASSWORD = API_DOMIAN1 + "User/Password?MinorToken={0}&oldpwd=
 API_URL.URL_VERIFY_BY_EMAIL = API_DOMIAN3 + "Client/VerifyCodeByEmail?email={0}";
 API_URL.URL_FORGOT_PASSWORD = API_DOMIAN3 + "Client/ForgotPassword?account={0}&newPassword={1}&checkNum={2}";
 API_URL.URL_GET_NEW_NOTIFICATIONS = API_DOMIAN1 +"Device/Alarms?MinorToken={0}&deviceToken={1}";
+API_URL.URL_GET_SPEEDLIMIT = "http://ss.sinopacific.com.ua/speedlimits/v1?latitude={0}&longitude={1}&timestamp=1"
 
 API_URL.URL_SET_ALERT_CONFIG = API_DOMIAN1 + "Device/AlertConfigureEdit";
 API_URL.URL_GET_ALERT_CONFIG = API_DOMIAN1 + "Device/GetAlertConfigure";
@@ -2394,9 +2395,13 @@ App.onPageBeforeRemove('asset.playback', function(page){
 
 App.onPageInit('asset.location', function (page) { 
     var panoButton = $$(page.container).find('.pano_button');
+    var speedLimitEl = $$(page.container).find('.position_speedlimit');
     var lat = panoButton.data('lat');
     var lng = panoButton.data('lng');
     var latlng = new google.maps.LatLng(lat, lng);
+    var alertType = page.context.AlertType;
+    var speed = page.context.Speed;
+    var speedUnitCode = page.context.SpeedUnitCode;
 
     showMap({'lat':lat,'lng':lng});
 
@@ -2409,6 +2414,32 @@ App.onPageInit('asset.location', function (page) {
         };
         showStreetView(params);        
     });
+
+    if (alertType == 32) {
+      
+        $.ajax({
+            type: "GET",
+            url: API_URL.URL_GET_SPEEDLIMIT.format(page.context.Lat, page.context.Lng),
+            data: {},
+            async: true,
+            crossDomain: true,
+            cache: false,
+            success: function(result) {
+               //console.log(result);   
+                if (result && result.max) {
+                    var speed = Protocol.Helper.getSpeedValue(speedUnitCode, parseInt(result.max));
+                    var speedUnit = Protocol.Helper.getSpeedUnit(speedUnitCode);
+                    speedLimitEl.html(parseInt(speed) + ' '+ speedUnit);
+                }
+
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+               console.log('womething wrong')
+            }
+        });
+                
+        
+    }
 });
 
 
@@ -3899,6 +3930,9 @@ function loadAlarmPage(params) {
                     alarms[key].state = false;
                 }
             });
+            if (assetAlarmVal == 36931518) {
+                alarms.alarm.state = false;
+            }
         }
     } else {
 
@@ -3907,6 +3941,9 @@ function loadAlarmPage(params) {
                 alarms[key].state = false;
             }
         });
+        if (params.AlertTypes == 36931518) {
+            alarms.alarm.state = false;
+        }
 
         if (params.Weeks) {
             var selectedDays = params.Weeks.split(',');
@@ -4062,21 +4099,26 @@ function loadTrackPage(params){
     var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
         
     var details = {
-        direct : '',
-        speed : 0,
-        mileage : '-',
-        templateUrl : 'resources/templates/asset.track.html',
-        latlng : {},
-        name : '',
-        time : '',
+        direct: '',
+        speed: 0,
+        mileage: '-',
+        templateUrl: 'resources/templates/asset.track.html',
+        latlng: {},
+        name: '',
+        time: '',
+        alertType: '',
+        showSpeedLimit: '',
+        speedUnitCode: '',
     };
 //{"title":"Acc off","type":65536,"imei":"0352544073967920","name":"Landcruiser Perth","lat":-32.032898333333335,"lng":115.86817722222216,"speed":0,"direct":0,"time":"2018-04-13 10:16:51"}
     if ((params && parseFloat(params.lat) !== 0 && parseFloat(params.lng) !== 0) || (parseFloat(asset.posInfo.lat) !== 0 && parseFloat(asset.posInfo.lng) !== 0) ){        
         if (params) {            
             window.PosMarker[TargetAsset.ASSET_IMEI] = L.marker([params.lat, params.lng], {icon: Protocol.MarkerIcon[0]}); 
             window.PosMarker[TargetAsset.ASSET_IMEI].setLatLng([params.lat, params.lng]);  
+
             if (asset && typeof asset.Unit !== "undefined" && typeof params.speed !== "undefined" ) {                 
                 details.speed = Protocol.Helper.getSpeedValue(asset.Unit, params.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+                details.speedUnitCode = asset.Unit;
             }
            
             details.templateUrl = 'resources/templates/asset.location.html';            
@@ -4084,7 +4126,12 @@ function loadTrackPage(params){
             details.latlng.lng = params.lng;
             details.name = params.name;
             details.time = params.time;
-            details.direct = parseInt(params.direct);             
+            details.direct = parseInt(params.direct);   
+            details.alertType = params.type;
+
+            if (params.type && params.type == '32') {
+                details.showSpeedLimit = true;
+            }          
             
         }else{            
             window.PosMarker[TargetAsset.ASSET_IMEI] = L.marker([asset.posInfo.lat, asset.posInfo.lng], {icon: Protocol.MarkerIcon[0]}); 
@@ -4092,6 +4139,7 @@ function loadTrackPage(params){
             details.direct = asset.posInfo.direct; 
             if (typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined") {
                 details.speed = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+                details.speedUnitCode = asset.Unit;
             }        
             if (typeof asset.Unit !== "undefined" && typeof asset.posInfo.mileage !== "undefined" && asset.posInfo.mileage != '-') {
                 details.mileage = (Protocol.Helper.getMileageValue(asset.Unit, asset.posInfo.mileage) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit);
@@ -4102,7 +4150,8 @@ function loadTrackPage(params){
             details.time = asset.posInfo.positionTime.format(window.COM_TIMEFORMAT);
         }
         
-        var deirectionCardinal = Protocol.Helper.getDirectionCardinal(details.direct);  
+        var deirectionCardinal = Protocol.Helper.getDirectionCardinal(details.direct); 
+
         checkMapExisting();        
         mainView.router.load({
             url:details.templateUrl,
@@ -4116,6 +4165,10 @@ function loadTrackPage(params){
                 Lat: details.latlng.lat,
                 Lng: details.latlng.lng,
                 Coords: 'GPS: ' + Protocol.Helper.convertDMS(details.latlng.lat, details.latlng.lng),
+                AlertType: details.alertType,
+                ShowSpeedLimit: details.showSpeedLimit,
+                Speedlimit: LANGUAGE.COM_MSG08,
+                SpeedUnitCode: details.speedUnitCode,
             }
         });        
 

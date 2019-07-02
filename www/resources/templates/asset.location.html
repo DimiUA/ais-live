@@ -56,24 +56,29 @@
                     </div>
                 </div>
                 <div class="row no-gutter">
-                    <div class="col-33 color-white">
-                        <!-- <img src="resources/images/svg_date.svg" alt=""> -->
+                    <div class="col-33 color-white">                        
                         <i class="f7-icons icon-other-data color-white"></i>
                         <p>{{@global.LANGUAGE.ASSET_TRACK_MSG00}}</p>  
                         <p class="position_data position_time">{{Time}}</p>
                     </div> 
-                    <div class="col-33 color-white">
-                        <!-- <img src="resources/images/svg_speed.svg" alt=""> -->
+                    <div class="col-33 color-white">                        
                         <i class="f7-icons icon-other-speed color-white"></i>
                         <p>{{@global.LANGUAGE.ASSET_TRACK_MSG02}}</p>  
                         <p class="position_data position_speed">{{Speed}}</p>
                     </div>
-                    <div class="col-33 color-white">
-                        <!-- <img src="resources/images/svg_mileage.svg" alt=""> -->
-                        <i class="f7-icons icon-other-distance color-white"></i>
-                        <p >{{@global.LANGUAGE.ASSET_TRACK_MSG03}}</p>  
-                        <p class="position_data position_mileage">{{Mileage}}</p>
-                    </div>
+                    {{#if ShowSpeedLimit}}
+                        <div class="col-33 color-white">
+                            <i class="f7-icons icon-speedlimit color-red"></i>
+                            <p>{{@global.LANGUAGE.COM_MSG54}}</p>  
+                            <p class="position_data position_speedlimit">{{Speedlimit}}</p>
+                        </div>
+                    {{else}}
+                        <div class="col-33 color-white">
+                            <i class="f7-icons icon-other-distance color-white"></i>
+                            <p >{{@global.LANGUAGE.ASSET_TRACK_MSG03}}</p>  
+                            <p class="position_data position_mileage">{{Mileage}}</p>
+                        </div>
+                    {{/if}}
                     
                 </div>
                 
