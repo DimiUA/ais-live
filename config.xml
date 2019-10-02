@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget 
-  version="1.2.9"
-  android-versionCode="29"
-  ios-CFBundleVersion="29"
+  version="1.2.94"
+  android-versionCode="32"
+  ios-CFBundleVersion="32"
   id="com.sinopacific.ais"
   xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android" defaultlocale="en-US" >
     <name>AIS Live</name>
@@ -29,10 +29,10 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <platform name="android">
-	  <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
-	      <application android:usesCleartextTraffic="true" />
-	  </edit-config>
-	</platform>
+    <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+        <application android:usesCleartextTraffic="true" />
+    </edit-config>
+  </platform>
 
     <preference name="load-url-timeout" value="140000" />
     <preference name="DisallowOverscroll" value="true" />
