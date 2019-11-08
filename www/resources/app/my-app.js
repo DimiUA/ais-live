@@ -5620,7 +5620,7 @@ function updateAssetsPosInfo(){
                 $.each( data, function( key, value ) {
                     posData = value;
                     imei = posData[1];
-                    if (POSINFOASSETLIST[imei] && !POSINFOASSETLIST[imei].posInfo.positionTime || POSINFOASSETLIST[imei] && posData[5] >= POSINFOASSETLIST[imei].posInfo.positionTime._i ) {
+                    if (!isObjEmpty(POSINFOASSETLIST[imei]) && !POSINFOASSETLIST[imei].posInfo.positionTime || POSINFOASSETLIST[imei] && posData[5] >= POSINFOASSETLIST[imei].posInfo.positionTime._i ) {
                         POSINFOASSETLIST[imei].initPosInfo(posData);
                     }
 
@@ -5951,8 +5951,10 @@ function setAssetListPosInfo(listObj){
                         var protocolClass = posData[2];
                         var deviceInfo = listObj[imei];
 
-                        POSINFOASSETLIST[imei] = Protocol.ClassManager.get(protocolClass, deviceInfo);
-                        POSINFOASSETLIST[imei].initPosInfo(posData);
+                         if  ( !isObjEmpty(deviceInfo) && deviceInfo.IMEI === imei){
+                             POSINFOASSETLIST[imei] = Protocol.ClassManager.get(protocolClass, deviceInfo);
+                             POSINFOASSETLIST[imei].initPosInfo(posData);
+                         }
 
                     });
 
