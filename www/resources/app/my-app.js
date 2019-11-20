@@ -297,10 +297,10 @@ var geofenceMarkerGroup = false;
 var AllMarkersGroup = false;
 var GeofenceFiguresGroup = false;
 
-var API_DOMIAN1 = "http://api.m2mglobaltech.com/QuikTrak/V1/";
+var API_DOMIAN1 = "https://api.m2mglobaltech.com/QuikTrak/V1/";
 var API_DOMIAN2 = "";
-var API_DOMIAN3 = "http://api.m2mglobaltech.com/QuikProtect/V1/";
-var API_DOMIAN4 = "http://api.m2mglobaltech.com/Quikloc8/V1/";
+var API_DOMIAN3 = "https://api.m2mglobaltech.com/QuikProtect/V1/";
+var API_DOMIAN4 = "https://api.m2mglobaltech.com/Quikloc8/V1/";
 var API_URL = {};
 API_URL.URL_GET_LOGIN = API_DOMIAN1 + "User/Auth?username={0}&password={1}&appKey={2}&mobileToken={3}&deviceToken={4}&deviceType={5}";
 //API_URL.URL_GET_LOGOUT = API_DOMIAN1 + "User/Logoff2?MajorToken={0}&MinorToken={1}&username={2}&mobileToken={3}";
@@ -316,7 +316,7 @@ API_URL.URL_SET_GEOLOCK_OFF = API_DOMIAN1 + "Device/Unlock?MajorToken={0}&MinorT
 API_URL.URL_GET_POSITION = API_DOMIAN1 + "Device/GetPosInfo?MinorToken={0}&Code={1}";
 API_URL.URL_GET_POSITION2 = API_DOMIAN1 + "Device/GetPosInfo2?MinorToken={0}&Code={1}";
 API_URL.URL_GET_POSITION_ARR = API_DOMIAN1 + "Device/GetHisPosArray?MinorToken={0}&Code={1}&From={2}&To={3}";
-API_URL.URL_GET_POSITION_ARR2 = "http://osrm.sinopacific.com.ua/playback/v4";
+API_URL.URL_GET_POSITION_ARR2 = "https://osrm.sinopacific.com.ua/playback/v4";
 API_URL.URL_GET_ALL_POSITIONS = API_DOMIAN1 + "Device/GetPosInfos?MinorToken={0}";
 API_URL.URL_GET_ALL_POSITIONS2 = API_DOMIAN1 + "Device/GetPosInfos2?MinorToken={0}&MajorToken={1}";
 API_URL.URL_GET_POSITION_GPRS = API_DOMIAN1 + "Device/GprsCommand?MinorToken={0}&Code={1}&Cmd=update";
@@ -324,7 +324,7 @@ API_URL.URL_RESET_PASSWORD = API_DOMIAN1 + "User/Password?MinorToken={0}&oldpwd=
 API_URL.URL_VERIFY_BY_EMAIL = API_DOMIAN3 + "Client/VerifyCodeByEmail?email={0}";
 API_URL.URL_FORGOT_PASSWORD = API_DOMIAN3 + "Client/ForgotPassword?account={0}&newPassword={1}&checkNum={2}";
 API_URL.URL_GET_NEW_NOTIFICATIONS = API_DOMIAN1 +"Device/Alarms?MinorToken={0}&deviceToken={1}";
-API_URL.URL_GET_SPEEDLIMIT = "http://ss.sinopacific.com.ua/speedlimits/v1?latitude={0}&longitude={1}&timestamp=1";
+API_URL.URL_GET_SPEEDLIMIT = "https://ss.sinopacific.com.ua/speedlimits/v1?latitude={0}&longitude={1}&timestamp=1";
 
 API_URL.URL_SET_ALERT_CONFIG = API_DOMIAN1 + "Device/AlertConfigureEdit";
 API_URL.URL_GET_ALERT_CONFIG = API_DOMIAN1 + "Device/GetAlertConfigure";
@@ -334,7 +334,8 @@ API_URL.URL_GET_GEOFENCE_LIST = API_DOMIAN1 + "Device/GetFenceList";
 API_URL.URL_GEOFENCE_EDIT = API_DOMIAN1 + "Device/FenceEdit";
 API_URL.URL_GEOFENCE_DELETE = API_DOMIAN1 + "Device/FenceDelete";
 API_URL.URL_GET_GEOFENCE_ASSET_LIST = API_DOMIAN1 + "Device/GetFenceAssetList";
-API_URL.URL_PHOTO_UPLOAD = "http://upload.quiktrak.co/image/Upload";
+API_URL.URL_PHOTO_UPLOAD = "https://upload.quiktrak.co/image/Upload";
+API_URL.URL_SAVED_PHOTO = "https://upload.quiktrak.co/Attachment/images/";
 API_URL.URL_SUPPORT = "http://support.quiktrak.eu/?name={0}&loginName={1}&email={2}&phone={3}&s={4}";
 API_URL.URL_REPORT_THEFT = "https://forms.quiktrak.com.au/report-theft/?loginName={0}&imei={1}&make={2}&model={3}&rego={4}";
 
@@ -1121,7 +1122,7 @@ App.onPageInit('asset.status', function (page) {
         if (asset && asset.Icon) {
             var pattern = /^IMEI_/i;
             if (pattern.test(asset.Icon)) {
-                AssetImg = 'http://upload.quiktrak.co/Attachment/images/'+asset.Icon+'?'+ new Date().getTime();
+                AssetImg = API_URL.URL_SAVED_PHOTO+asset.Icon+'?'+ new Date().getTime();
             }
         }
         var MaxSpeed = asset.MaxSpeed;
@@ -3791,7 +3792,7 @@ function getAssetImg(params, imgFor){
     if (params && imgFor.assetList) {
         var pattern = /^IMEI_/i;
         if (params.Icon && pattern.test(params.Icon)) {
-            assetImg = '<img class="item_asset_img" src="http://upload.quiktrak.co/Attachment/images/'+params.Icon+'?'+ new Date().getTime()+'" alt="">';
+            assetImg = '<img class="item_asset_img" src="'+API_URL.URL_SAVED_PHOTO+params.Icon+'?'+ new Date().getTime()+'" alt="">';
         }else if (params.Name) {
             params.Name = $.trim(params.Name);
             var splitted = params.Name.split(' ');
@@ -6865,6 +6866,9 @@ function saveImg(){
             mainView.router.back();
         },
         error: function(XMLHttpRequest, textStatus, errorThrown){
+            alert(JSON.stringify(XMLHttpRequest));
+            alert(JSON.stringify(textStatus));
+            alert(JSON.stringify(XMLHttpRequest));
            App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02);
         }
     });

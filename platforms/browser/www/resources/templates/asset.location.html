@@ -4,9 +4,9 @@
             <a href="#" class="back link "> <i class="f7-icons icon-header-arrow-back"></i></a>
         </div>
         <div class="center sliding">{{Name}}</div>
-        <!-- <div class="right sliding">
-            <a href="#" class="link refreshTrack"><i class="f7-icons icon-header-update"></i></a>
-        </div> -->
+        <div class="right sliding">
+            <a href="#" class="link settingsButton"><i class="f7-icons icon-other-menu-geofence"></i></a>
+        </div>
         
         <!-- Sub navbar -->
         <!-- <div class="subnavbar">
@@ -67,13 +67,20 @@
                         <i class="f7-icons icon-other-speed color-white"></i>
                         <p>{{@global.LANGUAGE.ASSET_TRACK_MSG02}}</p>  
                         <p class="position_data position_speed">{{Speed}}</p>
-                    </div>
-                    <div class="col-33 color-white">
-                        <!-- <img src="resources/images/svg_mileage.svg" alt=""> -->
-                        <i class="f7-icons icon-other-distance color-white"></i>
-                        <p >{{@global.LANGUAGE.ASSET_TRACK_MSG03}}</p>  
-                        <p class="position_data position_mileage">{{Mileage}}</p>
-                    </div>
+                    </div>                   
+                    {{#if ShowSpeedLimit}}
+                        <div class="col-33 color-white">
+                            <i class="f7-icons icon-speedlimit color-red"></i>
+                            <p>{{@global.LANGUAGE.COM_MSG54}}</p>  
+                            <p class="position_data position_speedlimit">{{Speedlimit}}</p>
+                        </div>
+                    {{else}}
+                        <div class="col-33 color-white">
+                            <i class="f7-icons icon-other-distance color-white"></i>
+                            <p >{{@global.LANGUAGE.ASSET_TRACK_MSG03}}</p>  
+                            <p class="position_data position_mileage">{{Mileage}}</p>
+                        </div>
+                    {{/if}}
                     
                 </div>
                 

@@ -30,6 +30,11 @@
     </div>
 <div class="pages">
     <div class="page with-subnavbar status_page bg-color-page" data-page="asset.status"> 
+        <div class="bottom-button-wrapper bg-color-page">
+            <div class="bottom-button-content">
+                <a href="resources/templates/report.theft.msg.html" class="button  button-fill bg-dealer"><i class="f7-icons icon icon-other-report-theft mr-8 color-white size-17"></i>{{@global.LANGUAGE.COM_MSG44}}</a>
+            </div>            
+        </div>
         <div class="page-content">
 
         	<div class="content-block status_block_top">
@@ -85,6 +90,21 @@
                             </div>
                         </div>                  
                     </li>
+                    <li class="item-content "> 
+                        <div class="item-media"><i class="f7-icons icon-other-door position_lockdoor {{#if LockDoorState}} state-3 {{else}} color-gray {{/if}}"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title-row">
+                                <div class="item-title open-lockdoor">{{@global.LANGUAGE.ASSET_STATUS_MSG26}}</div>
+                                <div class="item-after">
+                                    <label class="label-switch  ">
+                                        <input type="checkbox" name="LockDoor" {{#if LockDoorState}}checked="checked"{{/if}}>
+                                        <div class="checkbox"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>                  
+                    </li>
+
                 </ul> 
             </div>
     		
@@ -236,9 +256,12 @@
                 </ul>                
             </div>
         	
-
-        	
+            <!-- <div class="content-block">
+                <a href="resources/templates/report.theft.msg.html" class="button  button-fill bg-dealer"><i class="f7-icons icon icon-other-report-theft mr-8 color-white size-17"></i>{{@global.LANGUAGE.COM_MSG44}}</a>
+            </div> -->
+            <!--  -->        	
 
         </div>
+        
     </div>
 </div>

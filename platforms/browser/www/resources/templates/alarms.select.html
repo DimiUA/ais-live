@@ -17,43 +17,74 @@
 	  	
 	  	<div class="page-content">
 	  		<input type="hidden" name="Assets" value="{{Assets}}">
-	  		<div class="list-block no-hairlines layout-dark media-list list-block-selectall">
-                <ul>
-                    <li class="item-content ">	            	           		
-		           		<div class="item-inner">
-		            		<div class="item-title-row">
-		            	  		<div class="item-title ">{{@global.LANGUAGE.ALARM_MSG06}}</div>
-		            	  		<div class="item-after">
-		            	  			<label class="label-switch  ">
-			            	  			<input type="checkbox" name="checkbox-alarm" {{#if alarm}}checked="checked"{{/if}}>
-			              				<div class="checkbox"></div>
-			              			</label>
-		            	 		</div>
-		            	  	</div>
-		            	</div>	            	
-		            </li>
-                </ul> 
-            </div>
-	  		<div class="list-block layout-dark media-list alarm_list"> 
-	  				
+
+	  			<div class="content-block-title bw-li-switch layout-dark ">
+                    {{@global.LANGUAGE.GEOFENCE_MSG_28}}
+                    <label class="label-switch">
+                        <input type="checkbox" name="ignoreBetween" {{#if IgnoreBetween}} checked="checked" {{/if}}>
+                        <div class="checkbox"></div>
+                    </label> 
+                </div> 
+                <div class="list-block layout-dark list-block-input " >          
+                    <ul> 
+                        <li class="picker-el-wrapper {{#unless IgnoreBetween}} disabled {{/unless}}">
+                            <a href="#" class="item-content item-link item-with-arrow">                               
+                                <div class="item-inner">
+                                    <div class="item-title label">{{@global.LANGUAGE.GEOFENCE_MSG_16}}</div>
+                                    <div class="item-input">
+                                        <input type="text" placeholder="{{@global.LANGUAGE.GEOFENCE_MSG_16}}" name="picker-from" class="picker-from" readonly value="{{BeginTime}}">
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="picker-el-wrapper {{#unless IgnoreBetween}} disabled {{/unless}}">
+                            <a href="#" class="item-content item-link item-with-arrow">                                
+                                <div class="item-inner no-after">
+                                    <div class="item-title label">{{@global.LANGUAGE.GEOFENCE_MSG_17}}</div>
+                                    <div class="item-input  no-after">
+                                        <input type="text" placeholder="{{@global.LANGUAGE.GEOFENCE_MSG_17}}" name="picker-to" class="picker-to" readonly value="{{EndTime}}">
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="ignore-on-wrapper {{#unless IgnoreBetween}} disabled {{/unless}}">                        
+                            <a href="#" class="item-link smart-select " data-back-text=" " >                            
+                                <select name="ignore-days"  multiple> 
+                                    {{#each DaysOfWeek}}             
+                                        <option value="{{val}}" {{#if selected}} selected {{/if}}>{{name}}</option> 
+                                        {{else}}
+                                        <option value="0" >{{@global.LANGUAGE.GEOFENCE_MSG_20}}</option>
+                                        <option value="1" >{{@global.LANGUAGE.GEOFENCE_MSG_21}}</option>  
+                                        <option value="5" >{{@global.LANGUAGE.GEOFENCE_MSG_22}}</option>
+                                        <option value="3" >{{@global.LANGUAGE.GEOFENCE_MSG_23}}</option>  
+                                        <option value="4" >{{@global.LANGUAGE.GEOFENCE_MSG_24}}</option>
+                                        <option value="5" >{{@global.LANGUAGE.GEOFENCE_MSG_25}}</option>  
+                                        <option value="6" >{{@global.LANGUAGE.GEOFENCE_MSG_26}}</option>
+                                    {{/each}}  
+                                </select>
+                                <div class="item-content">
+                                    <div class="item-inner ">                                    
+                                        <div class="item-title label">{{@global.LANGUAGE.GEOFENCE_MSG_31}}</div>                                        
+                                    </div>
+                                </div>
+                            </a>
+                        </li> 
+                
+                    </ul>
+                </div>  		
+
+            <div class="content-block-title bw-li-switch layout-dark ">
+                {{@global.LANGUAGE.ALARM_MSG24}}
+                <label class="label-switch">
+                    <input type="checkbox" name="checkbox-alarm" {{#if alarm}} checked="checked" {{/if}}>
+                    <div class="checkbox"></div>
+                </label> 
+            </div> 
+	  		<div class="list-block layout-dark media-list alarm_list"> 	  				
 	  			<ul>
-	  				<!-- <li class="item-content alarm_title">	            	           		
-	  						           		<div class="item-inner">
-	  						            		<div class="item-title-row">
-	  						            	  		<div class="item-title ">{{@global.LANGUAGE.ALARM_MSG06}}</div>
-	  						            	  		<div class="item-after">
-	  						            	  			<label class="label-switch  ">
-	  							            	  			<input type="checkbox" name="checkbox-alarm" {{#if alarm}}checked="checked"{{/if}}>
-	  							              				<div class="checkbox"></div>
-	  							              			</label>
-	  						            	 		</div>
-	  						            	  	</div>
-	  						            	</div>	            	
-	  						            </li> -->
-		            
 	  				<li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox" name="checkbox-geofenceIn" value="8" {{#if geofenceIn}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm"name="checkbox-geofenceIn" value="8" {{#if geofenceIn}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 		            			<i class="icon icon-form-checkbox"></i>
 							</div>
@@ -64,7 +95,7 @@
 		            </li>
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox" name="checkbox-geolock" value="1024" {{#if geolock}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm"name="checkbox-geolock" value="1024" {{#if geolock}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 					        	<i class="icon icon-form-checkbox"></i>
 					        </div>
@@ -75,7 +106,7 @@
 		            </li>
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox" name="checkbox-harshAcc" value="33554432" {{#if harshAcc}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm"name="checkbox-harshAcc" value="33554432" {{#if harshAcc}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 					        	<i class="icon icon-form-checkbox"></i>
 					        </div>
@@ -86,7 +117,7 @@
 		            </li>
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox" name="checkbox-harshBrk" value="2097152" {{#if harshBrk}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm"name="checkbox-harshBrk" value="2097152" {{#if harshBrk}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 					        	<i class="icon icon-form-checkbox"></i>
 					        </div>
@@ -97,7 +128,7 @@
 		            </li>
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox" name="checkbox-accOff" value="65536" {{#if accOff}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm"name="checkbox-accOff" value="65536" {{#if accOff}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 					        	<i class="icon icon-form-checkbox"></i>
 					        </div>
@@ -108,7 +139,7 @@
 		            </li>
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox" name="checkbox-accOn" value="32768" {{#if accOn}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm"name="checkbox-accOn" value="32768" {{#if accOn}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 								<i class="icon icon-form-checkbox"></i>
 							</div>
@@ -119,7 +150,19 @@
 		            </li>
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox"  name="checkbox-geofenceOut" value="16" {{#if geofenceOut}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm" name="checkbox-illegalIgnition" value="128" {{#if illegalIgnition}}checked="checked"{{/if}}>
+		            		<div class="item-media">
+		            			<i class="icon icon-form-checkbox"></i>
+							</div>
+		            		<div class="item-inner">	
+		            			<div class="item-title">{{@global.LANGUAGE.ALARM_MSG14}}</div>   	  		
+		            	  	  			            	  	  	
+		            	  	</div>
+		            	</label>
+		            </li>
+		            <li >
+		            	<label class="label-checkbox item-content  " >
+		            		<input type="checkbox" class="input-checkbox-alarm" name="checkbox-geofenceOut" value="16" {{#if geofenceOut}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 		            			<i class="icon icon-form-checkbox"></i>
 							</div>
@@ -131,7 +174,7 @@
 		            </li>
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox"  name="checkbox-lowBattery" value="512" {{#if lowBattery}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm" name="checkbox-lowBattery" value="512" {{#if lowBattery}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 		            			<i class="icon icon-form-checkbox"></i>
 							</div>
@@ -143,7 +186,7 @@
 		            </li>
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox"  name="checkbox-mainBatteryFail" value="4" {{#if mainBatteryFail}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm" name="checkbox-mainBatteryFail" value="4" {{#if mainBatteryFail}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 		            			<i class="icon icon-form-checkbox"></i>
 							</div>
@@ -155,7 +198,7 @@
 		            </li>
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox" name="checkbox-custom2LowAlarm" value="1048576" {{#if custom2LowAlarm}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm"name="checkbox-custom2LowAlarm" value="1048576" {{#if custom2LowAlarm}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 								<i class="icon icon-form-checkbox"></i>
 							</div>
@@ -164,22 +207,11 @@
 		            	  	</div>
 		            	</label>
 		            </li>
-		            <li >
-		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox"  name="checkbox-illegalIgnition" value="128" {{#if illegalIgnition}}checked="checked"{{/if}}>
-		            		<div class="item-media">
-		            			<i class="icon icon-form-checkbox"></i>
-							</div>
-		            		<div class="item-inner">	
-		            			<div class="item-title">{{@global.LANGUAGE.ALARM_MSG14}}</div>   	  		
-		            	  	  			            	  	  	
-		            	  	</div>
-		            	</label>
-		            </li>
+		            
 
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox" name="checkbox-customAlarm" value="131072" {{#if customAlarm}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm"name="checkbox-customAlarm" value="131072" {{#if customAlarm}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 								<i class="icon icon-form-checkbox"></i>
 							</div>
@@ -190,7 +222,7 @@
 		            </li>
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox"  name="checkbox-sosAlarm" value="2" {{#if sosAlarm}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm" name="checkbox-sosAlarm" value="2" {{#if sosAlarm}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 		            			<i class="icon icon-form-checkbox"></i>
 							</div>
@@ -199,22 +231,10 @@
 		            	  	  			            	  	  	
 		            	  	</div>
 		            	</label>
-		            </li>
+		            </li>		           
 		            <li >
 		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox"  name="checkbox-speeding" value="32" {{#if speeding}}checked="checked"{{/if}}>
-		            		<div class="item-media">
-		            			<i class="icon icon-form-checkbox"></i>
-							</div>
-		            		<div class="item-inner">	
-		            			<div class="item-title">{{@global.LANGUAGE.ALARM_MSG23}}</div>   	  		
-		            	  	  			            	  	  	
-		            	  	</div>
-		            	</label>
-		            </li>
-		            <li >
-		            	<label class="label-checkbox item-content  " >
-		            		<input type="checkbox"  name="checkbox-tilt" value="256" {{#if tilt}}checked="checked"{{/if}}>
+		            		<input type="checkbox" class="input-checkbox-alarm" name="checkbox-tilt" value="256" {{#if tilt}}checked="checked"{{/if}}>
 		            		<div class="item-media">
 		            			<i class="icon icon-form-checkbox"></i>
 							</div>
@@ -228,6 +248,79 @@
 		        </ul>
 		        
 	  		</div>
+
+	  		<div class="content-block-title bw-li-switch layout-dark hintParent" data-hint-text="{{@global.LANGUAGE.PROMPT_MSG064}}" data-hint-title="{{@global.LANGUAGE.ALARM_MSG30}}">
+                <span class="showHint">{{@global.LANGUAGE.ALARM_MSG30}}</span>
+                <label class="label-switch">
+                    <input type="checkbox" class="input-checkbox-alarm" name="checkbox-offline" value="67108864" {{#if offline}} checked="checked" {{/if}}>
+                    <div class="checkbox"></div>
+                </label> 
+            </div> 	
+	  		<div class="list-block layout-dark media-list alarm_list"> 	  				
+	  			<ul>
+	  				<li >
+		            	<label class="label-checkbox item-content offline-options-wrapper {{#unless offline}} disabled {{/unless}}" >
+		            		<input type="checkbox" name="offline-option" value="24" {{#if offline24}}checked="checked"{{/if}}>
+		            		<div class="item-media">
+		            			<i class="icon icon-form-checkbox"></i>
+							</div>
+		            		<div class="item-inner">
+		            			<div class="item-title">24 {{@global.LANGUAGE.ALARM_MSG31}}</div>
+		            	  	</div>
+		            	</label>
+		            </li>
+		            <li >
+		            	<label class="label-checkbox item-content offline-options-wrapper {{#unless offline}} disabled {{/unless}}" >
+		            		<input type="checkbox" name="offline-option" value="48" {{#if offline48}}checked="checked"{{/if}}>
+		            		<div class="item-media">
+		            			<i class="icon icon-form-checkbox"></i>
+							</div>
+		            		<div class="item-inner">
+		            			<div class="item-title">48 {{@global.LANGUAGE.ALARM_MSG31}}</div>
+		            	  	</div>
+		            	</label>
+		            </li>
+		            <li >
+		            	<label class="label-checkbox item-content offline-options-wrapper {{#unless offline}} disabled {{/unless}}" >
+		            		<input type="checkbox" name="offline-option" value="72" {{#if offline72}}checked="checked"{{/if}}>
+		            		<div class="item-media">
+		            			<i class="icon icon-form-checkbox"></i>
+							</div>
+		            		<div class="item-inner">
+		            			<div class="item-title">72 {{@global.LANGUAGE.ALARM_MSG31}}</div>
+		            	  	</div>
+		            	</label>
+		            </li>
+		        </ul>
+		    </div>
+
+		    <div class="content-block-title bw-li-switch layout-dark hintParent" data-hint-text="{{@global.LANGUAGE.PROMPT_MSG062}}</br>{{@global.LANGUAGE.PROMPT_MSG063}}" data-hint-title="{{@global.LANGUAGE.ALARM_MSG23}}">
+                <span class="showHint">{{@global.LANGUAGE.ALARM_MSG23}}</span>
+                <label class="label-switch">
+                    <input type="checkbox" class="input-checkbox-alarm" name="checkbox-speeding" value="32" {{#if speeding}} checked="checked" {{/if}}>
+                    <div class="checkbox"></div>
+                </label> 
+            </div> 	
+			<div class="list-block layout-dark list-block-input">
+			  	<ul>			  	 
+			  	  	<li>
+			  	  	  	<label class="label-radio item-content overspeed-radio-wrapper {{#unless speeding}} disabled {{/unless}}">			  	  	  
+			  	  	  	  	<input type="radio" name="overspeed-radio" value="1" checked="checked">
+			  	  	  	  	<div class="item-inner">
+			  	  	  	  	  	<div class="item-title">{{@global.LANGUAGE.ALARM_MSG29}}</div>
+			  	  	  	  	</div>
+			  	  	  	</label>
+			  	  	</li>			  	  	
+			  	  	<li>
+			  	  	  	<label class="label-radio item-content overspeed-radio-wrapper {{#unless speeding}} disabled {{/unless}}">
+			  	  	  	  	<input type="radio" name="overspeed-radio" value="2" >
+			  	  	  	  	<div class="item-inner">
+			  	  	  	  	  	<div class="item-title">{{@global.LANGUAGE.ALARM_MSG28}}</div>
+			  	  	  	  	</div>
+			  	  	  	</label>
+			  	  	</li>			  	  	
+			  	</ul>
+			</div>     
 
 			
 	  	</div>

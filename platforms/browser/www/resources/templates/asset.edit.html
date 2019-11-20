@@ -28,7 +28,7 @@
 	    	</div>
 			
 			<div class="content-block-title">imei: {{IMEI}} ({{PRDTName}})</div>
-	    	<div class="list-block layout-dark list-block-input list-block-input no-hairlines">
+	    	<div class="list-block layout-dark list-block-input list-block-input ">
 	    		<input type="hidden" name="IMEI" value="{{IMEI}}">	    		
 			  	<ul>		    	
 			    	<li>
@@ -37,6 +37,16 @@
 			    	  	  	  	<div class="item-title label ">{{@global.LANGUAGE.ASSET_EDIT_MSG01}}</div>
 			    	  	  	  	<div class="item-input">
 			    	  	  	  	  	<input type="text" placeholder="{{@global.LANGUAGE.ASSET_EDIT_MSG01}}" name="Name" value="{{Name}}">
+			    	  	  	  	</div>
+			    	  	  	</div>
+			    	  	</div>
+			    	</li>
+			    	<li>
+			    	  	<div class="item-content">
+			    	  	  	<div class="item-inner">
+			    	  	  	  	<div class="item-title label ">{{@global.LANGUAGE.ASSET_EDIT_MSG13}}</div>
+			    	  	  	  	<div class="item-input">
+			    	  	  	  	  	<input type="text" placeholder="{{@global.LANGUAGE.ASSET_EDIT_MSG13}}" name="Registration" value="{{Registration}}">
 			    	  	  	  	</div>
 			    	  	  	</div>
 			    	  	</div>
@@ -67,10 +77,20 @@
 			    	  	  	</div>
 			    	  	</div>
 			    	</li>
+			    	<li>
+			    	  	<div class="item-content">
+			    	  	  	<div class="item-inner">
+			    	  	  	  	<div class="item-title label ">{{@global.LANGUAGE.ASSET_EDIT_MSG14}} ({{@global.LANGUAGE.ASSET_STATUS_MSG03}})</div>
+			    	  	  	  	<div class="item-input">
+			    	  	  	  	  	<input type="text" placeholder="{{@global.LANGUAGE.ASSET_EDIT_MSG14}}" name="MaxSpeed" value="{{MaxSpeed}}" class="only_numbers">
+			    	  	  	  	</div>
+			    	  	  	</div>
+			    	  	</div>
+			    	</li>
 			    </ul>
 			</div>
 			<div class="content-block-title">{{@global.LANGUAGE.ASSET_EDIT_MSG03}}</div>
-			<div class="list-block layout-dark list-block-input no-hairlines">
+			<div class="list-block layout-dark list-block-input">
 				<ul>		 
 			    	<!-- <li class="item-divider">{{@global.LANGUAGE.ASSET_EDIT_MSG03}}</li> -->
 			    	<li>
@@ -96,7 +116,7 @@
 			   	</ul>
 			</div>
 			<div class="content-block-title">{{@global.LANGUAGE.ASSET_EDIT_MSG06}}</div>
-			<div class="list-block layout-dark list-block-input no-hairlines">
+			<div class="list-block layout-dark list-block-input ">
 				<ul>
 			    	<!-- <li class="item-divider">{{@global.LANGUAGE.ASSET_EDIT_MSG06}}</li>	 -->
 					<li>

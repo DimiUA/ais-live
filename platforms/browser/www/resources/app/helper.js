@@ -1,7 +1,8 @@
+
 String.prototype.format = function (e) { var t = this; if (arguments.length > 0) if (arguments.length == 1 && typeof e == "object") { for (var n in e) if (e[n] != undefined) { var r = new RegExp("({" + n + "})", "g"); t = t.replace(r, e[n]) } } else for (var i = 0; i < arguments.length; i++) if (arguments[i] != undefined) { var r = new RegExp("({)" + i + "(})", "g"); t = t.replace(r, arguments[i]) } return t };
 String.prototype.subStrEx = function (e) { return this.length + 3 > e ? this.substr(0, e) + "..." : this };
 function isUndefined(e) { return "undefined" == typeof e };
-var JSON1={};
+var JSON1 = {};
 JSON1.request=function(url,success,error){if(url.indexOf("&callback=?")<0){if(url.indexOf("?")>0){url+="&callback=?"}else{url+="?callback=?"}}$.ajax({async:true,url:url,type:"get",dataType:"jsonp",jsonp:"callback",success:function(result){if(typeof(success)=='function'){success(typeof(result)=='string'?eval(result):result)}},error:function(){if(typeof(error)=='function'){error()}}})};
 JSON1.jsonp=function(url,funcCallback){window.parseLocation=function(results){var response=$.parseJSON(results);document.body.removeChild(document.getElementById('getJsonP'));delete window.parseLocation;if(funcCallback){funcCallback(response)}};function getJsonP(url){url=url+'&callback=parseLocation';var script=document.createElement('script');script.id='getJsonP';script.src=url;script.async=true;document.body.appendChild(script)}if(XMLHttpRequest){var xhr=new XMLHttpRequest();if('withCredentials'in xhr){var xhr=new XMLHttpRequest();xhr.onreadystatechange=function(){if(xhr.readyState==4){if(xhr.status==200){var response=$.parseJSON(xhr.responseText);if(funcCallback){funcCallback(response)}}else if(xhr.status==0||xhr.status==400){getJsonP(url)}else{}}};xhr.open('GET',url,true);xhr.send()}else if(XDomainRequest){var xdr=new XDomainRequest();xdr.onerror=function(err){};xdr.onload=function(){var response=JSON.parse(xdr.responseText);if(funcCallback){funcCallback(response)}};xdr.open('GET',url);xdr.send()}else{getJsonP(url)}}};
 JSON1.requestPost=function(url,data,success,error){$.ajax({async:true,url:url,data:data,type:"POST",dataType:"json",success:function(result){if(typeof(success)=='function'){success(typeof(result)=='string'?eval(result):result)}},error:function(){if(typeof(error)=='function'){error()}}})};
@@ -24,6 +25,11 @@ Protocol = {
             popupAnchor:  [0, -60] // point from which the popup should open relative to the iconAnchor
         })
     ],
+    PolygonCustomization:{
+        color: '#AA5959',
+        fillColor: '#FF0000',
+        fillOpacity: 0.25,
+    },
     PositionTypes: {
         "NONE": 0,
         "GPS": 1,
@@ -95,6 +101,7 @@ Protocol = {
     },
     ProductFeatures : {
         "Static":256,
+        "Charging":524288,
         "Holder":32768,
         "FuelSensor":2048,
         "Acc":128,
@@ -106,6 +113,7 @@ Protocol = {
         "Battery":1024,
         "DrivingTime":65536,
         "RFIDCard":16384,
+        "Heartrate":262144,
         "GsmSignal":32,
         "Mileage":16,
         "None":0,
@@ -117,7 +125,45 @@ Protocol = {
     StatusNewEnum:{
         "Geolock" : 1,
         "Immobilise": 2,
+        "LockDoor": 4,
     },
+    DaysOfWeek: [
+        {
+            val: 0,
+            name: LANGUAGE.GEOFENCE_MSG_20,
+            nameSmall: LANGUAGE.COM_MSG46,
+        },
+        {
+            val: 1,
+            name: LANGUAGE.GEOFENCE_MSG_21,
+            nameSmall: LANGUAGE.COM_MSG47,
+        },
+        {
+            val: 2,
+            name: LANGUAGE.GEOFENCE_MSG_22,
+            nameSmall: LANGUAGE.COM_MSG48,
+        },
+        {
+            val: 3,
+            name: LANGUAGE.GEOFENCE_MSG_23,
+            nameSmall: LANGUAGE.COM_MSG49,
+        },
+        {
+            val: 4,
+            name: LANGUAGE.GEOFENCE_MSG_24,
+            nameSmall: LANGUAGE.COM_MSG50,
+        },
+        {
+            val: 5,
+            name: LANGUAGE.GEOFENCE_MSG_25,
+            nameSmall: LANGUAGE.COM_MSG51,
+        },
+        {
+            val: 6,
+            name: LANGUAGE.GEOFENCE_MSG_26,
+            nameSmall: LANGUAGE.COM_MSG52,
+        },
+    ],
     Helper: {
         getSpeedValue: function (speedUnit, speed) {
             var ret = 0;
@@ -243,6 +289,7 @@ Protocol = {
         },
         getPositionType: function(type){
             var ret = "";
+            type ? type = parseInt(type,10) : '';
             switch (type){
                 case 0: case 1:
                     ret = "GPS";
@@ -269,6 +316,19 @@ Protocol = {
             return ret;
            
         },
+        getAlertNameByType: function(type){
+            var ret = "";
+            type ? type = parseInt(type,10) : '';
+            switch (type){ 
+                case 8:
+                    ret = LANGUAGE.ALARM_MSG12;    //InGeoFance
+                    break;
+                case 16:
+                    ret = LANGUAGE.ALARM_MSG13;     //OutGeoFance
+                    break;                    
+            }
+            return ret;  
+        },
         getDifferenceBTtwoDates: function(date1, date2){
             var ret = "";
             if (date1 && date2) {
@@ -284,8 +344,9 @@ Protocol = {
         },
         getGeoImmobState: function(val){            
             var ret = {
-                Geolock : false,
-                Immobilise : false
+                Geolock: false,
+                Immobilise: false,
+                LockDoor: false,
             };
             if (val) {
                 if ((parseInt(val) & 1) > 0) {        
@@ -294,12 +355,32 @@ Protocol = {
                 if ((parseInt(val) & 2) > 0) {        
                     ret.Immobilise = true; 
                 }
+                if ((parseInt(val) & 4) > 0) {        
+                    ret.LockDoor = true; 
+                }
             }            
             return ret;
         },
+        getGeofenceAlertType: function(val){
+            var ret = '';
+            if (val) {
+                if ((parseInt(val) & 8) > 0) {        
+                    ret += LANGUAGE.GEOFENCE_MSG_12 + ', '; 
+                }
+                if ((parseInt(val) & 16) > 0) {        
+                    ret += LANGUAGE.GEOFENCE_MSG_13 + ', '; 
+                }                
+            } 
+            if (ret) {
+                ret = ret.slice(0, -2);
+            }else{
+                ret = LANGUAGE.COM_MSG58; 
+            }
+            return ret; 
+        },
         getAddressByGeocoder: function(latlng,replyFunc){
             /*var url = "http://map.quiktrak.co/reverse.php?format=json&lat={0}&lon={1}&zoom=18&addressdetails=1".format(latlng.lat, latlng.lng);
-            JSON1.request(url, function(result){ replyFunc(result.display_name);});*/
+            JSON.request(url, function(result){ replyFunc(result.display_name);});*/
             var coords = latlng.lat + ', ' + latlng.lng;
             $.ajax({
                    type: "GET",                    
@@ -337,7 +418,7 @@ Protocol = {
         },
         getLatLngByGeocoder: function(address,replyFunc){            
             var url = "https://nominatim.openstreetmap.org/search?q={0}&format=json&polygon=1&addressdetails=1".format(address);
-                /*JSON1.request(url, function(result){                    
+                /*JSON.request(url, function(result){                    
                     var res = new L.LatLng(result[0].lat, result[0].lon);
                     replyFunc(res);
                 });*/
@@ -389,17 +470,23 @@ Protocol = {
         },    
         createMap: function(option){
             var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { name: 'osm', attribution: '' });            
-            var googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+            var googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
                 maxZoom: 22,
                 subdomains:['mt0','mt1','mt2','mt3']
             });           
-            var googleSatelitte = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+            var googleSatelitte = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
                 maxZoom: 20,
                 subdomains:['mt0','mt1','mt2','mt3']
             });  
          
 
-            var map = L.map(option.target, { zoomControl: false, center: option.latLng, zoom: option.zoom, layers: [googleStreets] }); 
+            var map = L.map(option.target, {
+                zoomControl: false,
+                center: option.latLng,
+                zoom: option.zoom,
+                fullscreenControl: true,
+                drawControl: option.drawControl ? option.drawControl : false,
+                layers: [googleStreets] });
                         
             var layers = {
                 "<span class='mapSwitcherWrapper googleSwitcherWrapper'><img class='layer-icon' src='resources/images/googleRoad.png' alt='' /> <p>Map</p></span>": googleStreets,
@@ -435,6 +522,7 @@ Protocol = {
             return latitude + " " + latitudeCardinal + "\n" + longitude + " " + longitudeCardinal;
         },
         getAssetStateInfo: function(asset){
+            
             /*
                 state-0  -- gray
                 state-1  -- green
@@ -491,7 +579,7 @@ Protocol = {
                         if(typeof asset.posInfo.alt == "undefined"){
                             ret.temperature.value = LANGUAGE.COM_MSG11;
                         }else{
-                            ret.temperature.value = asset.posInfo.alt + '&nbsp;°C'; 
+                            ret.temperature.value = Math.round(asset.posInfo.alt*10)/10 + '&nbsp;°C'; 
                         }                   
                     }
                     if(asset.haveFeature("FuelSensor")){
@@ -505,11 +593,19 @@ Protocol = {
                     if(asset.haveFeature("Voltage")){
                         ret.voltage = {};
                         //console.log(asset.posInfo.alt);
-                        if(typeof asset.posInfo.alt == "undefined"){
+                        /*if(typeof asset.posInfo.alt == "undefined"){
                             ret.voltage.value = LANGUAGE.COM_MSG11;
                         }else{                            
                             ret.voltage.value = (asset.posInfo.alt > 50? LANGUAGE.COM_MSG11 : ""+ Math.round(asset.posInfo.alt*10)/10 + '&nbsp;V');
-                        }                         
+                        }    */    
+
+                        ret.voltage.value = LANGUAGE.COM_MSG11;
+                        if(asset.posInfo.Voltage){
+                            ret.voltage.value =  Math.round(asset.posInfo.Voltage*10)/10 + '&nbsp;V';
+                        }
+                        else{
+                            ret.voltage.value = (asset.posInfo.alt > 50? LANGUAGE.COM_MSG11 : ""+ Math.round(asset.posInfo.alt*10)/10 + '&nbsp;V');
+                        }                 
                     } 
                     if(asset.haveFeature("Mileage")) {                    
                         ret.mileage = {};
@@ -554,6 +650,21 @@ Protocol = {
                     if(asset.haveFeature("Alt")){
                         ret.altitude = {};
                         ret.altitude.value = asset.posInfo.alt + '&nbsp;ft';                   
+                    }
+                    if(asset.haveFeature("Heartrate"))
+                    {
+                        ret.heartrate = {};
+                        ret.heartrate.value = parseInt(asset.posInfo.Heartrate); 
+
+                        /*ret.steps = {};
+                        ret.steps.value = parseInt(asset.posInfo.Steps);*/
+
+                        /*ret.push('<div class="item-attribute-border55">'
+                            +'<div  class="iconfont2 item-attribute-icon" style="color:red">&#xe65b;</div>'
+                            +'<div class="item-attribute-value">'
+                            +  parseInt(this.posInfo.Heartrate)
+                            +'</div>'
+                            +'</div>');  */   
                     }
                     /*if(asset.haveFeature("RFIDCard")){
                         ret.driver = {};
@@ -668,6 +779,10 @@ Protocol = {
                         value: false,
                         state: 'state-0',
                     };
+                    ret.lockdoor = {
+                        value: false,
+                        state: 'state-0',
+                    };
                     if (asset.StatusNew) {                       
                         var geolockImmobSate = Protocol.Helper.getGeoImmobState(asset.StatusNew);
                         if (geolockImmobSate.Geolock) {
@@ -677,6 +792,10 @@ Protocol = {
                         if (geolockImmobSate.Immobilise) {
                             ret.immob.value = geolockImmobSate.Immobilise;
                             ret.immob.state = 'state-3'; 
+                        }
+                        if (geolockImmobSate.LockDoor) {
+                            ret.lockdoor.value = geolockImmobSate.LockDoor;
+                            ret.lockdoor.state = 'state-3'; 
                         }
                     }                   
                     
@@ -744,7 +863,15 @@ Protocol.Common = JClass({
         this.AlarmOptions = arg.AlarmOptions;
         this._FIELD_FLOAT8 = arg._FIELD_FLOAT8;
         this.StatusNew = arg.StatusNew;    
-        this._FIELD_INT2 = arg._FIELD_INT2;   
+        this._FIELD_INT2 = arg._FIELD_INT2;
+        this.GroupCode = arg.GroupCode;   
+        this.SolutionType = arg.SolutionType;
+        this.Registration = arg.Registration;
+        this.StockNumber = arg.StockNumber;
+        this.MaxSpeed = arg.MaxSpeed;
+        this.MaxSpeedAlertMode = arg.MaxSpeedAlertMode;
+
+        
     
     },
     initDeviceInfoEx:function(){},
@@ -882,6 +1009,7 @@ Protocol.ClassManager = {
         return ret;
     }
 };
+
 
 
 
