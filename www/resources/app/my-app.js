@@ -6866,9 +6866,9 @@ function saveImg(){
             mainView.router.back();
         },
         error: function(XMLHttpRequest, textStatus, errorThrown){
-            alert(JSON.stringify(XMLHttpRequest));
+            /*alert(JSON.stringify(XMLHttpRequest));
             alert(JSON.stringify(textStatus));
-            alert(JSON.stringify(XMLHttpRequest));
+            alert(JSON.stringify(XMLHttpRequest));*/
            App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02);
         }
     });
