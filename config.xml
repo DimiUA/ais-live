@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget 
-  version="1.2.97"
-  android-versionCode="36"
-  ios-CFBundleVersion="36"
+  version="1.2.98"
+  android-versionCode="37"
+  ios-CFBundleVersion="37"
   id="com.sinopacific.ais"
   xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android" defaultlocale="en-US" >
     <name>AIS Live</name>
